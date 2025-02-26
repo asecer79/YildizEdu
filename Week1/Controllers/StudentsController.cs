@@ -85,9 +85,8 @@ namespace Week1.Controllers
             }
 
             var oldStudent = SchoolDb.Students.FirstOrDefault(p => p.Id == student.Id);
-            SchoolDb.Students.Remove(oldStudent);
 
-           
+            SchoolDb.Students.Remove(oldStudent);
 
             SchoolDb.Students.Add(student);
 
