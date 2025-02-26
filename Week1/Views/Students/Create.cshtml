@@ -1,0 +1,43 @@
+﻿@model Week1.Models.Student
+<h3>Create</h3>
+
+
+
+<form action="/students/create" method="post">
+    <table>
+        <tr>
+            <td>Id</td>
+            <td><input type="number" name="id" value="@Model.Id"/></td>
+        </tr>
+
+        <tr>
+            <td>Name</td>
+            <td><input type="text" name="name" value="@Model.Name" /></td>
+        </tr>
+
+        <tr>
+            <td>Student Id</td>
+            <td><input type="text" name="studentId" value="@Model.StudentId" /></td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td><input type="text" name="description" value="@Model.Description" /></td>
+        </tr>
+    </table>
+    
+    @{
+        if (ViewBag.errors!=null)
+        {
+            if (ViewBag.errors.Count>0)
+            {
+                foreach (var err in ViewBag.errors)
+                {
+                    <p style="color:red">@err</p>
+                }
+            }
+        }
+        
+    }
+
+    <input type="submit" value="Save" />
+</form>

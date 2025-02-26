@@ -1,0 +1,41 @@
+﻿@model Week1.Models.Student
+<h3>Edit</h3>
+
+
+
+<form action="/students/edit" method="post">
+    
+    <input type="hidden" name="id" value="@Model.Id"/>
+
+    <table>
+
+
+        <tr>
+            <td>Name</td>
+            <td><input type="text" name="name" value="@Model.Name"/></td>
+        </tr>
+
+        <tr>
+            <td>Student Id</td>
+            <td><input type="text" name="studentId" value="@Model.StudentId"/></td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td><input type="text" name="description" value="@Model.Description"/></td>
+        </tr>
+    </table>
+    @{
+        if (ViewBag.errors!=null)
+        {
+            if (ViewBag.errors.Count>0)
+            {
+                foreach (var err in ViewBag.errors)
+                {
+                    <p style="color:red">@err</p>
+                }
+            }
+        }
+        
+    }
+    <input type="submit" value="Save"/>
+</form>

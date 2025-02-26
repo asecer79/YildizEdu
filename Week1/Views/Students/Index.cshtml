@@ -1,5 +1,8 @@
-﻿@model Week1.Models.Student
+﻿@model List<Week1.Models.Student>
 
+@* @{
+    var students = ViewBag.students;
+} *@
 
 <html>
 <head>
@@ -7,19 +10,42 @@
 </head>
 
 <body>
-<h1>Hello World</h1>
-<h2>
-    @Model.Id 
-</h2>
-<h2>
-    @Model.Name 
-</h2>
-<h2>
-    @Model.Description
-</h2>
-    <h2>
-        @Model.StudentId
-    </h2>
+    <h1>Students</h1>
+    
+<a href="/students/create"> Create new </a>
+<table border="1">
+        <tr>
+            <td>Id</td>
+            <td>Name</td>
+            <td>Student Id</td>
+            <td>Description</td>
+            <td>Operation</td>
+        </tr>
+
+        @{
+            foreach (var student in Model)
+            {
+                <tr>
+                    <td>@student.Id</td>
+                    <td>@student.Name</td>
+
+                    <td>@student.StudentId</td>
+
+                    <td>@student.Description</td>
+                    <td>
+                          
+                        <a href="/students/edit/@student.Id"> Edit </a> |
+                        
+                            
+                        <a href="/students/delete/@student.Id"> Delete </a>
+                    </td>
+
+                </tr>
+            }
+        }
+    </table>
+
+
 </body>
 
 </html>
