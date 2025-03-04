@@ -10,8 +10,4 @@
     <Folder Include="wwwroot\Files\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Week2\Week2.csproj" />
-  </ItemGroup>
-
 </Project>

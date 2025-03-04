@@ -3,14 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Week1", "Week1\Week1.csproj", "{6839F322-0B43-4CDA-B4AB-60E7AE1446C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Week1-2", "Week1\Week1-2.csproj", "{6839F322-0B43-4CDA-B4AB-60E7AE1446C1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CourseFiles", "CourseFiles", "{136EBBF5-6C61-42EA-9A91-D320656E30FB}"
 	ProjectSection(SolutionItems) = preProject
 		Week1\01-Internet Programming with MVC Design Pattern.pdf = Week1\01-Internet Programming with MVC Design Pattern.pdf
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Week2", "Week2\Week2.csproj", "{BEA9055B-DA38-4272-B62E-F05D6E7A0F9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,10 +20,6 @@ Global
 		{6839F322-0B43-4CDA-B4AB-60E7AE1446C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6839F322-0B43-4CDA-B4AB-60E7AE1446C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6839F322-0B43-4CDA-B4AB-60E7AE1446C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BEA9055B-DA38-4272-B62E-F05D6E7A0F9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BEA9055B-DA38-4272-B62E-F05D6E7A0F9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BEA9055B-DA38-4272-B62E-F05D6E7A0F9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BEA9055B-DA38-4272-B62E-F05D6E7A0F9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
