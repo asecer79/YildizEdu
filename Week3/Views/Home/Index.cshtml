@@ -1,0 +1,61 @@
+﻿@{
+
+   // Layout = "_DarkLayout";
+
+    ViewData["Title"] = "Home Page";
+
+    var list = new List<SelectListItem>();
+
+
+    list.Add(new SelectListItem { Value = "1", Text = "Ahmet", Selected = false });
+    list.Add(new SelectListItem { Value = "2", Text = "Zeynep" });
+}
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+RAZOR SYNTAX
+@* @{
+    for (int i = 0; i < 100; i++)
+    {
+         <p>@i</p>
+    }
+}
+ *@
+HTML Helper in .NET Core MVC
+<br />
+@Html.TextBox("username", "", new { @class = "form-control" })
+
+@* <input class="form-control" id="username" name="username" type="text" value=""> *@
+
+
+<br/>
+@Html.ActionLink("Go to Home", "Index", "Home")
+@* <a href="home/index">Go to Home</a>
+ *@
+
+<br />
+@Html.DropDownList("Category", list, "Select Category", new { @class = "form-control" })
+
+@* <select class="form-control" id="Category" name="Category"><option value="">Select Category</option>
+    <option value="1">Ahmet</option>
+    <option value="2">Zeynep</option>
+</select>
+ *@
+ 
+@Html.BoldText("Hello this is my html component")
+@* <strong>Hello this is my html component</strong> *@
+<br />
+
+
+URL Helper in .NET Core MVC
+<br />
+<a href="@Url.Action("Details", "Product", new { id = 5 })">Product</a>
+<br/>
+<img src="@Url.Content("~/images/logo.png")" />
+<br />
+
+<a href="@Url.RouteUrl("default", new { controller = "Home", action = "Index" })"> Route</a>
+
+<br />
