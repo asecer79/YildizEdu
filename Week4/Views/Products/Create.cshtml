@@ -1,0 +1,25 @@
+﻿@model Product
+
+<form action="/Products/Create" method="post">
+
+
+    <div style="width:500px">
+        <div class="mb-3">
+            <input type="text" class="form-control form-control-sm" placeholder="Name" name="Name" value="@Model.Name">
+            <span class="text-danger">@Html.ValidationMessage("Name")</span>
+        </div>
+        <div class="mb-3">
+            <input type="number" class="form-control form-control-sm" placeholder="Price" name="Price" value="@Model.Price">
+            <span class="text-danger">@Html.ValidationMessage("Price")</span>
+        </div>
+        <div class="mb-3">
+            <input type="text" class="form-control form-control-sm" placeholder="Category" name="Category" value="@Model.Category">
+            <span class="text-danger">@Html.ValidationMessage("Category")</span>
+        </div>
+
+        <div class="mb-3">
+            <input type="submit" class="btn btn-success float-end" value="Save">
+        </div>
+    </div>
+
+</form>

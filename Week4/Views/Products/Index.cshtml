@@ -1,0 +1,38 @@
+﻿@model List<Product>
+
+<h3>Products</h3>
+<a class="btn btn-primary btn-sm" href="/Products/Create"> Create </a>
+
+<table class="table table-primary">
+    
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Category</th>
+        <th style="width:200px">CRUD</th>
+    </tr>
+
+    </thead>
+    
+    <tbody>
+       @{
+           foreach (var product in Model)
+           {
+               <tr>
+                   <td>@product.Id</td>
+                   <td>@product.Name</td>
+                   <td>@product.Price</td>
+                   <td>@product.Category</td>
+                   <td>
+                       <a class="btn btn-primary btn-sm" href="/Products/Create"> Create </a>
+                        <a class="btn btn-warning btn-sm" href="/Products/Edit/@product.Id"> Edit </a>
+                        <a class="btn btn-danger btn-sm" href="/Products/Delete/@product.Id"> Delete </a>
+                   </td>
+               </tr>
+           }
+       }
+
+    </tbody>
+</table>
