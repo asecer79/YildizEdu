@@ -1,7 +1,16 @@
+using System.Configuration;
+using Microsoft.EntityFrameworkCore;
+using Yildiz.Edu.WebUI.DataAccess.Context;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+//builder.Services.AddDbContext<UniEduDbContext>(options =>
+//    options.UseSqlServer());
+
 
 var app = builder.Build();
 
