@@ -1,6 +1,9 @@
 using System.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Yildiz.Edu.WebUI.DataAccess.Abstract;
+using Yildiz.Edu.WebUI.DataAccess.Concrete;
 using Yildiz.Edu.WebUI.DataAccess.Context;
+using Yildiz.Edu.WebUI.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +14,8 @@ builder.Services.AddControllersWithViews();
 //builder.Services.AddDbContext<UniEduDbContext>(options =>
 //    options.UseSqlServer());
 
+//di container
+builder.Services.AddSingleton<IFacultyDal>(new FacultyDal());
 
 var app = builder.Build();
 

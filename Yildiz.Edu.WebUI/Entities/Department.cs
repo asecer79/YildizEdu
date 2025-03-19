@@ -17,9 +17,9 @@ public class Department
     public string HeadOfDepartment { get; set; }
 
     [ForeignKey("FacultyId")]
-    public virtual Faculty Faculty { get; set; }
+    public virtual Faculty? Faculty { get; set; }
 
-    public virtual ICollection<Student> Students { get; set; }
-    public virtual ICollection<Instructor> Instructors { get; set; }
-    public virtual ICollection<Course> Courses { get; set; }
+    public virtual ICollection<Student>? Students { get; set; }
+    public virtual ICollection<Instructor>? Instructors { get; set; }
+    public virtual ICollection<Course>? Courses { get; set; }
 }

@@ -5,24 +5,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Yildiz.Edu.WebUI.DataAccess.Abstract;
 using Yildiz.Edu.WebUI.DataAccess.Context;
 using Yildiz.Edu.WebUI.Entities;
 
 namespace Yildiz.Edu.WebUI.Controllers
 {
-    public class FacultiesController : Controller
+    public class FacultiesController(IFacultyDal facultyDal) : Controller
     {
-        private readonly UniEduDbContext _context;
-
-        public FacultiesController()
-        {
-            _context = new UniEduDbContext();
-        }
-
         // GET: Faculties
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Faculties.ToListAsync());
+            return await Task.Run(() => View(facultyDal.GetAll()));
         }
 
         // GET: Faculties/Details/5
@@ -33,14 +27,13 @@ namespace Yildiz.Edu.WebUI.Controllers
                 return NotFound();
             }
 
-            var faculty = await _context.Faculties
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var faculty = facultyDal.GetAll().FirstOrDefault(m => m.Id == id);
             if (faculty == null)
             {
                 return NotFound();
             }
 
-            return View(faculty);
+            return await Task.Run(() => View(faculty));
         }
 
         // GET: Faculties/Create
@@ -58,27 +51,19 @@ namespace Yildiz.Edu.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(faculty);
-                await _context.SaveChangesAsync();
+                facultyDal.Add(faculty);
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(faculty);
+            return await Task.Run(() => View(faculty));
         }
 
         // GET: Faculties/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var faculty = await _context.Faculties.FindAsync(id);
-            if (faculty == null)
-            {
-                return NotFound();
-            }
-            return View(faculty);
+            var faculty = facultyDal.Get(id);
+            return await Task.Run(() => View(faculty));
         }
 
         // POST: Faculties/Edit/5
@@ -97,8 +82,7 @@ namespace Yildiz.Edu.WebUI.Controllers
             {
                 try
                 {
-                    _context.Update(faculty);
-                    await _context.SaveChangesAsync();
+                    facultyDal.Update(faculty);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -113,7 +97,7 @@ namespace Yildiz.Edu.WebUI.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(faculty);
+            return await Task.Run(() => View(faculty));
         }
 
         // GET: Faculties/Delete/5
@@ -124,14 +108,14 @@ namespace Yildiz.Edu.WebUI.Controllers
                 return NotFound();
             }
 
-            var faculty = await _context.Faculties
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var faculty = facultyDal.GetAll()
+                .FirstOrDefault(m => m.Id == id);
             if (faculty == null)
             {
                 return NotFound();
             }
 
-            return View(faculty);
+            return await Task.Run(() => View(faculty));
         }
 
         // POST: Faculties/Delete/5
@@ -139,19 +123,14 @@ namespace Yildiz.Edu.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var faculty = await _context.Faculties.FindAsync(id);
-            if (faculty != null)
-            {
-                _context.Faculties.Remove(faculty);
-            }
 
-            await _context.SaveChangesAsync();
+            facultyDal.Delete(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool FacultyExists(int id)
         {
-            return _context.Faculties.Any(e => e.Id == id);
+            return facultyDal.Get(id)!=null!;
         }
     }
 }
