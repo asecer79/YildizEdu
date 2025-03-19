@@ -14,6 +14,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Week3", "Week3\Week3.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Week4", "Week4\Week4.csproj", "{99135730-C492-4BD1-8AE9-E0BCC8C3BC6D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yildiz.Edu.WebUI", "Yildiz.Edu.WebUI\Yildiz.Edu.WebUI.csproj", "{AEFA92A2-9493-4FAB-88D7-D4E942FEEA6B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LabWorks", "LabWorks", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,8 +36,20 @@ Global
 		{99135730-C492-4BD1-8AE9-E0BCC8C3BC6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99135730-C492-4BD1-8AE9-E0BCC8C3BC6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99135730-C492-4BD1-8AE9-E0BCC8C3BC6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEFA92A2-9493-4FAB-88D7-D4E942FEEA6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEFA92A2-9493-4FAB-88D7-D4E942FEEA6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEFA92A2-9493-4FAB-88D7-D4E942FEEA6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEFA92A2-9493-4FAB-88D7-D4E942FEEA6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6839F322-0B43-4CDA-B4AB-60E7AE1446C1} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{B1F7038E-5B8F-4466-B1D3-EE8F7CF071CF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{99135730-C492-4BD1-8AE9-E0BCC8C3BC6D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C543F511-23FD-4B42-A177-64FC29ECFDD7}
 	EndGlobalSection
 EndGlobal
