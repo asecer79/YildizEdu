@@ -5,12 +5,6 @@ VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Week1-2", "Week1\Week1-2.csproj", "{6839F322-0B43-4CDA-B4AB-60E7AE1446C1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CourseFiles", "CourseFiles", "{136EBBF5-6C61-42EA-9A91-D320656E30FB}"
-	ProjectSection(SolutionItems) = preProject
-		Week1\01-Internet Programming with MVC Design Pattern.pdf = Week1\01-Internet Programming with MVC Design Pattern.pdf
-		G:\Drive'ım\Girdiğim Dersler\02-Instructor Documents\2024-2025-02-Bahar\MVC-EN\Week5-AdvancedEf\MVC UniEduDb Scripts.sql = G:\Drive'ım\Girdiğim Dersler\02-Instructor Documents\2024-2025-02-Bahar\MVC-EN\Week5-AdvancedEf\MVC UniEduDb Scripts.sql
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Week3", "Week3\Week3.csproj", "{B1F7038E-5B8F-4466-B1D3-EE8F7CF071CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Week4", "Week4\Week4.csproj", "{99135730-C492-4BD1-8AE9-E0BCC8C3BC6D}"

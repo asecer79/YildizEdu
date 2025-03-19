@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="__AdditionalProjectFiles\01-Internet Programming with MVC Design Pattern.pdf" />
+    <Content Include="__AdditionalProjectFiles\MVC UniEduDb Scripts.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Models\" />
   </ItemGroup>
 
