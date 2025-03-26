@@ -22,7 +22,13 @@ namespace Yildiz.Edu.WebUI.Controllers
         // GET: Departments
         public async Task<IActionResult> Index()
         {
+
+
+
             var uniEduDbContext = _context.Departments.Include(d => d.Faculty);
+
+
+
             return View(await uniEduDbContext.ToListAsync());
         }
 

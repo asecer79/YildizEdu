@@ -1,4 +1,5 @@
 using System.Configuration;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.EntityFrameworkCore;
 using Yildiz.Edu.WebUI.DataAccess.Abstract;
 using Yildiz.Edu.WebUI.DataAccess.Concrete;
@@ -10,7 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddMemoryCache();
 
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6370,defaultDatabase=0";
+    //options.InstanceName= "YTUCache-";
+});
 //builder.Services.AddDbContext<UniEduDbContext>(options =>
 //    options.UseSqlServer());
 

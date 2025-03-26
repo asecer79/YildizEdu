@@ -1,22 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using Yildiz.Edu.WebUI.DataAccess.Abstract;
 using Yildiz.Edu.WebUI.DataAccess.Context;
 using Yildiz.Edu.WebUI.Entities;
+using Yildiz.Edu.WebUI.Services;
 
 namespace Yildiz.Edu.WebUI.Controllers
 {
-    public class FacultiesController(IFacultyDal facultyDal) : Controller
+    public class FacultiesController(IFacultyDal facultyDal, IMemoryCache memoryCache, IDistributedCache distributedCache) : Controller
     {
+        //RedisManagerV1 redisManager = new RedisManagerV1();
+
+        IDistributedCache distributedCache = distributedCache;
+
         // GET: Faculties
         public async Task<IActionResult> Index()
         {
-            return await Task.Run(() => View(facultyDal.GetAll()));
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            var key = "facultyList";
+
+            // var cachedData = memoryCache.Get<List<Faculty>>(key);
+            //  var cachedData = redisManager.Get<List<Faculty>>(key);
+            IList<Faculty> cachedData = null;
+            var jsonString = distributedCache.GetString(key);
+
+            if (jsonString!=null)
+            {
+                cachedData =JsonConvert.DeserializeObject<List<Faculty>>(jsonString);
+            }
+
+            if (cachedData != null)
+            {
+
+                ViewBag.ElapsedMs = sw.Elapsed.TotalMilliseconds;
+
+                return await Task.Run(() => View(cachedData));
+            }
+            else
+            {
+                await Task.Delay(3000);//artificial delay for only test purpose
+
+                var liveData = facultyDal.GetAll();
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions()
+                {
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    
+                };
+
+                // memoryCache.Set(key, liveData, options);
+               // redisManager.Set(key, liveData);
+               distributedCache.SetString(key,JsonConvert.SerializeObject(liveData));
+
+                ViewBag.ElapsedMs = sw.Elapsed.TotalMilliseconds;
+                
+                return await Task.Run(() => View(liveData));
+            }
         }
 
         // GET: Faculties/Details/5
@@ -53,6 +103,11 @@ namespace Yildiz.Edu.WebUI.Controllers
             {
                 facultyDal.Add(faculty);
 
+                var key = "facultyList";
+                //memoryCache.Remove(key);
+                //redisManager.Remove(key);
+                distributedCache.Remove(key);
+
                 return RedirectToAction(nameof(Index));
             }
             return await Task.Run(() => View(faculty));
@@ -83,6 +138,12 @@ namespace Yildiz.Edu.WebUI.Controllers
                 try
                 {
                     facultyDal.Update(faculty);
+
+                    var key = "facultyList";
+                    //memoryCache.Remove(key);
+                    //redisManager.Remove(key);
+                    distributedCache.Remove(key);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -125,12 +186,19 @@ namespace Yildiz.Edu.WebUI.Controllers
         {
 
             facultyDal.Delete(id);
+
+            var key = "facultyList";
+            //memoryCache.Remove(key);
+            //redisManager.Remove(key);
+            distributedCache.Remove(key);
+
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool FacultyExists(int id)
         {
-            return facultyDal.Get(id)!=null!;
+            return facultyDal.Get(id) != null!;
         }
     }
 }
