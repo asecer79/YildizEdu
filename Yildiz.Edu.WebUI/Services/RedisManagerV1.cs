@@ -6,7 +6,7 @@ namespace Yildiz.Edu.WebUI.Services
 {
     public class RedisManagerV1
     {
-        private ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost:6370");
+        private ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost:6379");
         private IDatabase db;
         public RedisManagerV1()
         {

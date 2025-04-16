@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Yildiz.Edu.WebUI.Entities;
+using Yildiz.Edu.WebUI.Entities.Security;
 
 namespace Yildiz.Edu.WebUI.DataAccess.Context
 {
@@ -26,6 +27,10 @@ namespace Yildiz.Edu.WebUI.DataAccess.Context
         public DbSet<Semester> Payments { get; set; }
         public DbSet<Semester> Semesters { get; set; }
         public DbSet<Student> Students { get; set; }
-   
+
+        public DbSet<User> Users { get; set; }
+        public DbSet<OperationClaim> OperationClaims { get; set; }
+        public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
+
     }
 }

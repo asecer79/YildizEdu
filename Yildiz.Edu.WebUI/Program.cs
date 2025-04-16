@@ -1,6 +1,9 @@
 using System.Configuration;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.EntityFrameworkCore;
+using Yildiz.Edu.WebUI.AuthHelpers;
 using Yildiz.Edu.WebUI.DataAccess.Abstract;
 using Yildiz.Edu.WebUI.DataAccess.Concrete;
 using Yildiz.Edu.WebUI.DataAccess.Context;
@@ -9,20 +12,47 @@ using Yildiz.Edu.WebUI.Entities;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    //options.Filters.Add(new AuthorizeFilter());
+
+});
+
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddMemoryCache();
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = "localhost:6370,defaultDatabase=0";
+    options.Configuration = "localhost:6379,defaultDatabase=0";
     //options.InstanceName= "YTUCache-";
 });
 //builder.Services.AddDbContext<UniEduDbContext>(options =>
 //    options.UseSqlServer());
 
 //di container
-builder.Services.AddSingleton<IFacultyDal>(new FacultyDal());
+builder.Services.AddSingleton<IFacultyDal,FacultyDal>();
+
+builder.Services.AddScoped<IUserDal,UserDal>();
+
+builder.Services.AddScoped<AuthHelper>();
+
+
+
+var cookieAuthOptions = builder.Configuration.GetSection("CookieAuthOptions").Get<CookieAuthOptions>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+    options.LoginPath = cookieAuthOptions.LoginPath;
+    options.LogoutPath = cookieAuthOptions.LogOutPath;
+    options.AccessDeniedPath = cookieAuthOptions.AccessDeniedPath;
+    options.ExpireTimeSpan = TimeSpan.FromDays(cookieAuthOptions.TimeOut);
+    options.SlidingExpiration = true;
+    options.Cookie.Name = cookieAuthOptions.Name;
+});
+
+
 
 var app = builder.Build();
 
@@ -35,11 +65,16 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseRouting();
 
-app.UseAuthorization();
-
 app.MapStaticAssets();
+
+app.UseCookiePolicy();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

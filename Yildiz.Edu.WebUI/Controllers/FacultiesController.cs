@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,13 +17,14 @@ using Yildiz.Edu.WebUI.Services;
 
 namespace Yildiz.Edu.WebUI.Controllers
 {
+    [Authorize]
     public class FacultiesController(IFacultyDal facultyDal, IMemoryCache memoryCache, IDistributedCache distributedCache) : Controller
     {
         //RedisManagerV1 redisManager = new RedisManagerV1();
 
         IDistributedCache distributedCache = distributedCache;
 
-        // GET: Faculties
+        //[Authorize]
         public async Task<IActionResult> Index()
         {
             Stopwatch sw = new Stopwatch();
@@ -87,6 +89,7 @@ namespace Yildiz.Edu.WebUI.Controllers
         }
 
         // GET: Faculties/Create
+        [Authorize(Roles = "Admin,Instructor")]
         public IActionResult Create()
         {
             return View();
@@ -97,6 +100,7 @@ namespace Yildiz.Edu.WebUI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> Create(Faculty faculty)
         {
             if (ModelState.IsValid)
@@ -114,6 +118,7 @@ namespace Yildiz.Edu.WebUI.Controllers
         }
 
         // GET: Faculties/Edit/5
+        [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> Edit(int id)
         {
 
@@ -126,6 +131,7 @@ namespace Yildiz.Edu.WebUI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FacultyName,DeanName,EstablishedDate")] Faculty faculty)
         {
             if (id != faculty.Id)
@@ -162,6 +168,7 @@ namespace Yildiz.Edu.WebUI.Controllers
         }
 
         // GET: Faculties/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -182,6 +189,7 @@ namespace Yildiz.Edu.WebUI.Controllers
         // POST: Faculties/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
