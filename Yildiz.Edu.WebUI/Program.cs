@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Yildiz.Edu.Business.Abstract;
+using Yildiz.Edu.Business.Concrete;
 using Yildiz.Edu.DataAccess.Dal.Abstract;
 using Yildiz.Edu.DataAccess.Dal.Concrete;
+using Yildiz.Edu.Security.AuthHelpers;
 using Yildiz.Edu.WebUI.AuthHelpers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,12 +29,14 @@ builder.Services.AddStackExchangeRedisCache(options =>
 //    options.UseSqlServer());
 
 //di container
+builder.Services.AddSingleton<IFacultyService, FacultyService>();
 builder.Services.AddSingleton<IFacultyDal,FacultyDal>();
 
+builder.Services.AddSingleton<IDepartmentService, DepartmentService>();
 builder.Services.AddSingleton<IDepartmentDal, DepartmentDal>();
 
-
-builder.Services.AddScoped<IUserDal,UserDal>();
+builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<IUserDal,UserDal>();
 
 builder.Services.AddScoped<AuthHelper>();
 

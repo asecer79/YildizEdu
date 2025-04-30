@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
-namespace Yildiz.Edu.WebUI.Services
+namespace Yildiz.Edu.Caching.Services
 {
     public class RedisManagerV1
     {

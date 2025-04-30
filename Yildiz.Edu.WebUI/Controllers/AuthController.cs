@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using Yildiz.Edu.WebUI.AuthHelpers;
+using Yildiz.Edu.Security.AuthHelpers;
 
 namespace Yildiz.Edu.WebUI.Controllers
 {

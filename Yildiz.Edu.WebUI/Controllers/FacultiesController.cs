@@ -5,13 +5,13 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System.Diagnostics;
-using Yildiz.Edu.DataAccess.Dal.Abstract;
+using Yildiz.Edu.Business.Abstract;
 using Yildiz.Edu.Entities.Concrete;
 
 namespace Yildiz.Edu.WebUI.Controllers
 {
     [Authorize]
-    public class FacultiesController(IFacultyDal facultyDal, IMemoryCache memoryCache, IDistributedCache distributedCache) : Controller
+    public class FacultiesController(IFacultyService facultyService, IMemoryCache memoryCache, IDistributedCache distributedCache) : Controller
     {
         //RedisManagerV1 redisManager = new RedisManagerV1();
 
@@ -46,7 +46,7 @@ namespace Yildiz.Edu.WebUI.Controllers
             {
                 await Task.Delay(3000);//artificial delay for only test purpose
 
-                var liveData = facultyDal.GetAll();
+                var liveData = facultyService.GetAll();
 
                 MemoryCacheEntryOptions options = new MemoryCacheEntryOptions()
                 {
@@ -72,7 +72,7 @@ namespace Yildiz.Edu.WebUI.Controllers
                 return NotFound();
             }
 
-            var faculty = facultyDal.GetAll().FirstOrDefault(m => m.Id == id);
+            var faculty = facultyService.GetAll().FirstOrDefault(m => m.Id == id);
             if (faculty == null)
             {
                 return NotFound();
@@ -98,7 +98,7 @@ namespace Yildiz.Edu.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                facultyDal.Add(faculty);
+                facultyService.Add(faculty);
 
                 var key = "facultyList";
                 //memoryCache.Remove(key);
@@ -115,7 +115,7 @@ namespace Yildiz.Edu.WebUI.Controllers
         public async Task<IActionResult> Edit(int id)
         {
 
-            var faculty = facultyDal.Get(id);
+            var faculty = facultyService.Get(id);
             return await Task.Run(() => View(faculty));
         }
 
@@ -136,7 +136,7 @@ namespace Yildiz.Edu.WebUI.Controllers
             {
                 try
                 {
-                    facultyDal.Update(faculty);
+                    facultyService.Update(faculty);
 
                     var key = "facultyList";
                     //memoryCache.Remove(key);
@@ -169,7 +169,7 @@ namespace Yildiz.Edu.WebUI.Controllers
                 return NotFound();
             }
 
-            var faculty = facultyDal.GetAll()
+            var faculty = facultyService.GetAll()
                 .FirstOrDefault(m => m.Id == id);
             if (faculty == null)
             {
@@ -186,7 +186,7 @@ namespace Yildiz.Edu.WebUI.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
-            facultyDal.Delete(id);
+            facultyService.Delete(id);
 
             var key = "facultyList";
             //memoryCache.Remove(key);
@@ -199,7 +199,7 @@ namespace Yildiz.Edu.WebUI.Controllers
 
         private bool FacultyExists(int id)
         {
-            return facultyDal.Get(id) != null!;
+            return facultyService.Get(id) != null!;
         }
     }
 }

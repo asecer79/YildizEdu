@@ -1,22 +1,24 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Claims;
-using Yildiz.Edu.DataAccess.Dal.Abstract;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Yildiz.Edu.Business.Abstract;
 using Yildiz.Edu.Entities.Concrete.Security;
 
-namespace Yildiz.Edu.WebUI.AuthHelpers
+namespace Yildiz.Edu.Security.AuthHelpers
 {
     public class AuthHelper
     {
         IConfiguration configuration;
         IHttpContextAccessor httpContextAccessor;
-        IUserDal userDal;
+        IUserService userService;
 
-        public AuthHelper(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IUserDal userDal)
+        public AuthHelper(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IUserService userService)
         {
             this.configuration = configuration;
             this.httpContextAccessor = httpContextAccessor;
-            this.userDal = userDal;
+            this.userService = userService;
         }
 
 
@@ -30,7 +32,7 @@ namespace Yildiz.Edu.WebUI.AuthHelpers
 
 
 
-            var userClaims = userDal.GetUserOperationClaims(user.Id);
+            var userClaims = userService.GetUserOperationClaims(user.Id);
 
             if (userClaims != null)
             {
@@ -47,13 +49,13 @@ namespace Yildiz.Edu.WebUI.AuthHelpers
 
         public async Task<bool> SignIn(string email, string password)
         {
-            var userExists = userDal.CheckUserToLogin(email, password);
+            var userExists = userService.CheckUserToLogin(email, password);
 
             if (!userExists)
             {
                 return false;
             }
-            var user = userDal.GetUserByEmail(email, password);
+            var user = userService.GetUserByEmail(email, password);
 
             var claims = GetUserClaims(user);
 
