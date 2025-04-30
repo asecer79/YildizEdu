@@ -1,35 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Yildiz.Edu.WebUI.DataAccess.Context;
-using Yildiz.Edu.WebUI.Entities;
+using Yildiz.Edu.DataAccess.Dal.Abstract;
+using Yildiz.Edu.Entities.Concrete;
 
 namespace Yildiz.Edu.WebUI.Controllers
 {
     public class DepartmentsController : Controller
     {
-        private readonly UniEduDbContext _context;
+        
+        IDepartmentDal _departmentDal;
+        private IFacultyDal _facultyDal;
 
-        public DepartmentsController()
+        public DepartmentsController(IDepartmentDal departmentDal, IFacultyDal facultyDal)
         {
-            _context = new UniEduDbContext();
+            _departmentDal = departmentDal;
+            _facultyDal = facultyDal;
         }
 
         // GET: Departments
-        public async Task<IActionResult> Index()
+        public  async Task<IActionResult> Index()
         {
 
-
-
-            var uniEduDbContext = _context.Departments.Include(d => d.Faculty);
-
-
-
-            return View(await uniEduDbContext.ToListAsync());
+            
+            return await Task.FromResult<IActionResult>(View(_departmentDal.GetAll()));
         }
 
         // GET: Departments/Details/5
@@ -40,9 +34,8 @@ namespace Yildiz.Edu.WebUI.Controllers
                 return NotFound();
             }
 
-            var department = await _context.Departments
-                .Include(d => d.Faculty)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var department = _departmentDal.Get(id.Value);
+
             if (department == null)
             {
                 return NotFound();
@@ -54,7 +47,7 @@ namespace Yildiz.Edu.WebUI.Controllers
         // GET: Departments/Create
         public IActionResult Create()
         {
-            ViewData["FacultyId"] = new SelectList(_context.Faculties, "Id", "FacultyName");
+            ViewData["FacultyId"] = new SelectList(_facultyDal.GetAll(), "Id", "FacultyName");
             return View();
         }
 
@@ -67,12 +60,12 @@ namespace Yildiz.Edu.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(department);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _departmentDal.Add(department);
+
+                return await Task.FromResult<IActionResult>(RedirectToAction(nameof(Index)));
             }
-            ViewData["FacultyId"] = new SelectList(_context.Faculties, "Id", "FacultyName", department.FacultyId);
-            return View(department);
+            ViewData["FacultyId"] = new SelectList(_facultyDal.GetAll(), "Id", "FacultyName", department.FacultyId);
+            return await Task.FromResult<IActionResult>(View(department));
         }
 
         // GET: Departments/Edit/5
@@ -80,16 +73,17 @@ namespace Yildiz.Edu.WebUI.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return await Task.FromResult<IActionResult>(NotFound());
             }
 
-            var department = await _context.Departments.FindAsync(id);
+            var department = _departmentDal.Get(id.Value);
+
             if (department == null)
             {
-                return NotFound();
+                return await Task.FromResult<IActionResult>(NotFound());
             }
-            ViewData["FacultyId"] = new SelectList(_context.Faculties, "Id", "FacultyName", department.FacultyId);
-            return View(department);
+            ViewData["FacultyId"] = new SelectList(_facultyDal.GetAll() , "Id", "FacultyName", department.FacultyId);
+            return await Task.FromResult<IActionResult>(View(department));
         }
 
         // POST: Departments/Edit/5
@@ -108,8 +102,7 @@ namespace Yildiz.Edu.WebUI.Controllers
             {
                 try
                 {
-                    _context.Update(department);
-                    await _context.SaveChangesAsync();
+                    _departmentDal.Update(department);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,7 +117,7 @@ namespace Yildiz.Edu.WebUI.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FacultyId"] = new SelectList(_context.Faculties, "Id", "FacultyName", department.FacultyId);
+            ViewData["FacultyId"] = new SelectList(_facultyDal.GetAll(), "Id", "FacultyName", department.FacultyId);
             return View(department);
         }
 
@@ -133,18 +126,16 @@ namespace Yildiz.Edu.WebUI.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return  await Task.FromResult<IActionResult>(NotFound());
             }
 
-            var department = await _context.Departments
-                .Include(d => d.Faculty)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var department = _departmentDal.Get(id.Value);
             if (department == null)
             {
-                return NotFound();
+                return await Task.FromResult<IActionResult>(NotFound());
             }
 
-            return View(department);
+            return await Task.FromResult<IActionResult>(View(department));
         }
 
         // POST: Departments/Delete/5
@@ -152,19 +143,19 @@ namespace Yildiz.Edu.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var department = await _context.Departments.FindAsync(id);
+            var department = _departmentDal.Get(id);
+
             if (department != null)
             {
-                _context.Departments.Remove(department);
+                _departmentDal.Delete(id);
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return await Task.FromResult<IActionResult>(RedirectToAction(nameof(Index)));
         }
 
         private bool DepartmentExists(int id)
         {
-            return _context.Departments.Any(e => e.Id == id);
+            return _departmentDal.GetAll().Any(e => e.Id == id);
         }
     }
 }

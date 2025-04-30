@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
-using Yildiz.Edu.WebUI.DataAccess.Abstract;
-using Yildiz.Edu.WebUI.DataAccess.Context;
-using Yildiz.Edu.WebUI.Entities;
-using Yildiz.Edu.WebUI.Services;
+using System.Diagnostics;
+using Yildiz.Edu.DataAccess.Dal.Abstract;
+using Yildiz.Edu.Entities.Concrete;
 
 namespace Yildiz.Edu.WebUI.Controllers
 {

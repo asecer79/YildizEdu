@@ -1,13 +1,7 @@
-using System.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
-using Microsoft.EntityFrameworkCore;
+using Yildiz.Edu.DataAccess.Dal.Abstract;
+using Yildiz.Edu.DataAccess.Dal.Concrete;
 using Yildiz.Edu.WebUI.AuthHelpers;
-using Yildiz.Edu.WebUI.DataAccess.Abstract;
-using Yildiz.Edu.WebUI.DataAccess.Concrete;
-using Yildiz.Edu.WebUI.DataAccess.Context;
-using Yildiz.Edu.WebUI.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +27,9 @@ builder.Services.AddStackExchangeRedisCache(options =>
 
 //di container
 builder.Services.AddSingleton<IFacultyDal,FacultyDal>();
+
+builder.Services.AddSingleton<IDepartmentDal, DepartmentDal>();
+
 
 builder.Services.AddScoped<IUserDal,UserDal>();
 

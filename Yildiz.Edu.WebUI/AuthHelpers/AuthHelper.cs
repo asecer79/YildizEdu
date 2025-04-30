@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
-using Yildiz.Edu.WebUI.DataAccess.Abstract;
-using Yildiz.Edu.WebUI.Entities.Security;
+using Yildiz.Edu.DataAccess.Dal.Abstract;
+using Yildiz.Edu.Entities.Concrete.Security;
 
 namespace Yildiz.Edu.WebUI.AuthHelpers
 {
