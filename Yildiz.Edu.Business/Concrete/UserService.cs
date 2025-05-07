@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Yildiz.Edu.Business.Abstract;
 using Yildiz.Edu.DataAccess.Dal.Abstract;
+using Yildiz.Edu.Entities.Concrete;
 using Yildiz.Edu.Entities.Concrete.Security;
 
 namespace Yildiz.Edu.Business.Concrete
@@ -18,14 +20,14 @@ namespace Yildiz.Edu.Business.Concrete
             _userDal = userDal;
         }
 
-        public User Get(int id)
+        public User Get(Expression<Func<User, bool>> filter)
         {
-          return _userDal.Get(id);
+          return _userDal.Get(filter);
         }
 
-        public List<User> GetAll()
+        public IEnumerable<User> GetAll(Expression<Func<User, bool>> filter=null)
         {
-            return _userDal.GetAll();
+            return _userDal.GetAll(filter);
         }
 
         public User Add(User entity)
@@ -38,9 +40,9 @@ namespace Yildiz.Edu.Business.Concrete
            return _userDal.Update(entity);
         }
 
-        public bool Delete(int id)
+        public User Delete(User entity)
         {
-           return _userDal.Delete(id);
+           return _userDal.Delete(entity);
         }
 
         public bool CheckUserToLogin(string email, string password)

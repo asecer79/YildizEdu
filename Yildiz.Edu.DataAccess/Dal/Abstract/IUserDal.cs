@@ -1,12 +1,11 @@
-﻿using Yildiz.Edu.DataAccess.Dal.ICommonDbOperations;
+﻿using Core.DataAccess.Repository;
 using Yildiz.Edu.Entities.Concrete.Security;
 
 namespace Yildiz.Edu.DataAccess.Dal.Abstract
 {
-    public interface  IUserDal:ICommonDal<User>
+    public interface  IUserDal: IEntityRepository<User>
     {
        
-
         bool CheckUserToLogin(string email, string password);
 
         List<OperationClaim> GetUserOperationClaims(int userId);

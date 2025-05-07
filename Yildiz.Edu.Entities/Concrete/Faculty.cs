@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Core.DataAccess.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Yildiz.Edu.Entities.Concrete
 {
     // 1. Faculty Model
-    public class Faculty
+    public class Faculty : IEntity
     {
         [Key]
         public int Id { get; set; }

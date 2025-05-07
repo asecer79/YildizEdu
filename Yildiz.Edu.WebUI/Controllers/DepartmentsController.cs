@@ -34,7 +34,7 @@ namespace Yildiz.Edu.WebUI.Controllers
                 return NotFound();
             }
 
-            var department = _departmentService.Get(id.Value);
+            var department = _departmentService.Get(p=>p.Id==id.Value);
 
             if (department == null)
             {
@@ -76,7 +76,7 @@ namespace Yildiz.Edu.WebUI.Controllers
                 return await Task.FromResult<IActionResult>(NotFound());
             }
 
-            var department = _departmentService.Get(id.Value);
+            var department = _departmentService.Get(p=>p.Id== id.Value);
 
             if (department == null)
             {
@@ -129,7 +129,7 @@ namespace Yildiz.Edu.WebUI.Controllers
                 return  await Task.FromResult<IActionResult>(NotFound());
             }
 
-            var department = _departmentService.Get(id.Value);
+            var department = _departmentService.Get(p => p.Id == id.Value);
             if (department == null)
             {
                 return await Task.FromResult<IActionResult>(NotFound());
@@ -143,11 +143,11 @@ namespace Yildiz.Edu.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var department = _departmentService.Get(id);
+            var department = _departmentService.Get(p=>p.Id==id);
 
             if (department != null)
             {
-                _departmentService.Delete(id);
+                _departmentService.Delete(department);
             }
 
             return await Task.FromResult<IActionResult>(RedirectToAction(nameof(Index)));

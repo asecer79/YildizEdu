@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Core.DataAccess.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Yildiz.Edu.Entities.Concrete;
 
-public class Semester
+public class Semester : IEntity
 {
     [Key]
     public int Id { get; set; }

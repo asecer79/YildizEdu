@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Core.DataAccess.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Yildiz.Edu.Entities.Concrete;
 
-public class Instructor
+public class Instructor : IEntity
 {
     [Key]
     public int Id { get; set; }

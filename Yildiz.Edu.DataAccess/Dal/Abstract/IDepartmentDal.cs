@@ -1,9 +1,9 @@
-﻿using Yildiz.Edu.DataAccess.Dal.ICommonDbOperations;
+﻿using Core.DataAccess.Repository;
 using Yildiz.Edu.Entities.Concrete;
 
 namespace Yildiz.Edu.DataAccess.Dal.Abstract
 {
-    public interface IDepartmentDal: ICommonDal<Department>
+    public interface IDepartmentDal: IEntityRepository<Department>
     {
      
     }

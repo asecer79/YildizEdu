@@ -1,4 +1,5 @@
-﻿using Yildiz.Edu.Business.Abstract;
+﻿using System.Linq.Expressions;
+using Yildiz.Edu.Business.Abstract;
 using Yildiz.Edu.DataAccess.Dal.Abstract;
 using Yildiz.Edu.Entities.Concrete;
 
@@ -13,15 +14,15 @@ namespace Yildiz.Edu.Business.Concrete
             _departmentDal = departmentDal;
         }
 
-        public Department Get(int id)
+        public Department Get(Expression<Func<Department, bool>> filter)
         {
             //...
-            return _departmentDal.Get(id);
+            return _departmentDal.Get(filter);
         }
 
-        public List<Department> GetAll()
+        public IEnumerable<Department> GetAll(Expression<Func<Department, bool>> filter=null)
         {
-           return _departmentDal.GetAll();
+           return _departmentDal.GetAll(filter);
         }
 
         public Department Add(Department entity)
@@ -34,9 +35,9 @@ namespace Yildiz.Edu.Business.Concrete
             return _departmentDal.Update(entity);
         }
 
-        public bool Delete(int id)
+        public Department Delete(Department entity)
         {
-            return _departmentDal.Delete(id);
+            return _departmentDal.Delete(entity);
         }
     }
    

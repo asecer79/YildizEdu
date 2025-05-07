@@ -115,7 +115,7 @@ namespace Yildiz.Edu.WebUI.Controllers
         public async Task<IActionResult> Edit(int id)
         {
 
-            var faculty = facultyService.Get(id);
+            var faculty = facultyService.Get(p=>p.Id==id);
             return await Task.Run(() => View(faculty));
         }
 
@@ -186,7 +186,9 @@ namespace Yildiz.Edu.WebUI.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
-            facultyService.Delete(id);
+            var faculty = facultyService.Get(p=>p.Id==id);
+
+            facultyService.Delete(faculty);
 
             var key = "facultyList";
             //memoryCache.Remove(key);
@@ -194,12 +196,12 @@ namespace Yildiz.Edu.WebUI.Controllers
             distributedCache.Remove(key);
 
 
-            return RedirectToAction(nameof(Index));
+            return await Task.FromResult<IActionResult>(RedirectToAction(nameof(Index)));
         }
 
         private bool FacultyExists(int id)
         {
-            return facultyService.Get(id) != null!;
+            return facultyService.Get(p=>p.Id==id) != null!;
         }
     }
 }

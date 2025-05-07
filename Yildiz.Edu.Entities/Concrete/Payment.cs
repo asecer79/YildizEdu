@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Core.DataAccess.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Yildiz.Edu.Entities.Concrete;
 
-public class Payment
+public class Payment : IEntity
 {
     [Key]
     public int Id { get; set; }
@@ -27,4 +28,6 @@ public class Payment
 
     [ForeignKey("SemesterId")]
     public virtual Semester Semester { get; set; }
+
+
 }

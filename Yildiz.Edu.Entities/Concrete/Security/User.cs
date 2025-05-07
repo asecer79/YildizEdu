@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Core.DataAccess.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Yildiz.Edu.Entities.Concrete.Security
 {
-    public class User
+    public class User : IEntity
     {
         [Key] public int Id { get; set; }
 
