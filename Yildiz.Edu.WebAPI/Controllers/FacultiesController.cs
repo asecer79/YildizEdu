@@ -62,15 +62,12 @@ namespace Yildiz.Edu.WebAPI.Controllers
 
                 _distributedCache.SetString(key, JsonConvert.SerializeObject(liveData));
 
-
-
                 return await Task.Run(() => liveData.ToList());
             }
         }
 
-
         [HttpGet]
-        [Route("Details")]
+        [Route("Details/{id}")]
         public async Task<Faculty> Details(int? id)
         {
             if (id == null)
@@ -88,7 +85,6 @@ namespace Yildiz.Edu.WebAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Instructor")]
         [Route("Create")]
         public async Task<Faculty> Create(Faculty faculty)
         {
@@ -105,7 +101,6 @@ namespace Yildiz.Edu.WebAPI.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Instructor")]
         [Route("Edit")]
         public async Task<Faculty> Edit(Faculty faculty)
         {
@@ -125,7 +120,6 @@ namespace Yildiz.Edu.WebAPI.Controllers
 
         // POST: Faculties/Delete/5
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = "Admin")]
         public async Task<bool> Delete(Faculty faculty)
         {
 

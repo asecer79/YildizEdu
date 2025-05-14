@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Yildiz.Edu.Business\Yildiz.Edu.Business.csproj" />
     <ProjectReference Include="..\Yildiz.Edu.Security\Yildiz.Edu.Security.csproj" />
   </ItemGroup>
 

@@ -1,207 +1,139 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
-using System.Diagnostics;
-using Yildiz.Edu.Business.Abstract;
+using System.Text;
 using Yildiz.Edu.Entities.Concrete;
 
 namespace Yildiz.Edu.WebUI.Controllers
 {
     [Authorize]
-    public class FacultiesController(IFacultyService facultyService, IMemoryCache memoryCache, IDistributedCache distributedCache) : Controller
+    public class FacultiesController : Controller
     {
-        //RedisManagerV1 redisManager = new RedisManagerV1();
 
-        IDistributedCache distributedCache = distributedCache;
+        private HttpClient client;
 
-        //[Authorize]
-        public async Task<IActionResult> Index()
+        public FacultiesController()
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
-            var key = "facultyList";
-
-            // var cachedData = memoryCache.Get<List<Faculty>>(key);
-            //  var cachedData = redisManager.Get<List<Faculty>>(key);
-            IList<Faculty> cachedData = null;
-            var jsonString = distributedCache.GetString(key);
-
-            if (jsonString!=null)
+            client = new HttpClient()
             {
-                cachedData =JsonConvert.DeserializeObject<List<Faculty>>(jsonString);
-            }
-
-            if (cachedData != null)
-            {
-
-                ViewBag.ElapsedMs = sw.Elapsed.TotalMilliseconds;
-
-                return await Task.Run(() => View(cachedData));
-            }
-            else
-            {
-                await Task.Delay(3000);//artificial delay for only test purpose
-
-                var liveData = facultyService.GetAll();
-
-                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions()
-                {
-                    SlidingExpiration = TimeSpan.FromSeconds(60),
-                    
-                };
-
-                // memoryCache.Set(key, liveData, options);
-               // redisManager.Set(key, liveData);
-               distributedCache.SetString(key,JsonConvert.SerializeObject(liveData));
-
-                ViewBag.ElapsedMs = sw.Elapsed.TotalMilliseconds;
-                
-                return await Task.Run(() => View(liveData));
-            }
+                BaseAddress = new Uri("https://localhost:7136")
+            };
         }
 
-        // GET: Faculties/Details/5
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var response = await client.GetAsync("api/Faculties/GetList");
+
+            var data = await response.Content.ReadAsStringAsync();
+            var faculties = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Faculty>>(data);
+            return await Task.FromResult<IActionResult>(View(faculties));
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var response = await client.GetAsync($"api/Faculties/Details/{id}");
+            var data = await response.Content.ReadAsStringAsync();
 
-            var faculty = facultyService.GetAll().FirstOrDefault(m => m.Id == id);
-            if (faculty == null)
-            {
-                return NotFound();
-            }
+            var faculty = Newtonsoft.Json.JsonConvert.DeserializeObject<Faculty>(data);
 
-            return await Task.Run(() => View(faculty));
+            return View(faculty);
         }
 
         // GET: Faculties/Create
-        [Authorize(Roles = "Admin,Instructor")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var response = await client.GetAsync($"api/Faculties/GetList");
+            var data = await response.Content.ReadAsStringAsync();
+
+            return View(new Faculty());
         }
 
-        // POST: Faculties/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> Create(Faculty faculty)
         {
             if (ModelState.IsValid)
             {
-                facultyService.Add(faculty);
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(faculty);
 
-                var key = "facultyList";
-                //memoryCache.Remove(key);
-                //redisManager.Remove(key);
-                distributedCache.Remove(key);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                return RedirectToAction(nameof(Index));
+                var response = await client.PostAsync("api/Faculties/Create", content);
+
+                return RedirectToAction("Index", "Faculties");
+
             }
-            return await Task.Run(() => View(faculty));
+
+            return await Task.FromResult<IActionResult>(View(faculty));
         }
 
         // GET: Faculties/Edit/5
-        [Authorize(Roles = "Admin,Instructor")]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
+            var response = await client.GetAsync($"api/Faculties/Details/{id}");
+            var content = await response.Content.ReadAsStringAsync();
 
-            var faculty = facultyService.Get(p=>p.Id==id);
-            return await Task.Run(() => View(faculty));
+            var faculty = Newtonsoft.Json.JsonConvert.DeserializeObject<Faculty>(content);
+
+            return await Task.FromResult<IActionResult>(View(faculty));
         }
 
-        // POST: Faculties/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Instructor")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FacultyName,DeanName,EstablishedDate")] Faculty faculty)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FacultyName,FacultyId,HeadOfFaculty")] Faculty faculty)
         {
-            if (id != faculty.Id)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    facultyService.Update(faculty);
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(faculty);
 
-                    var key = "facultyList";
-                    //memoryCache.Remove(key);
-                    //redisManager.Remove(key);
-                    distributedCache.Remove(key);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FacultyExists(faculty.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                var response = await client.PostAsync("api/Faculties/Edit", content);
+
+                return RedirectToAction("Index", "Faculties");
+
             }
-            return await Task.Run(() => View(faculty));
+
+
+            return await Task.FromResult<IActionResult>(View(faculty));
         }
 
         // GET: Faculties/Delete/5
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var response = await client.GetAsync($"api/Faculties/Details/{id}");
+            var content = await response.Content.ReadAsStringAsync();
 
-            var faculty = facultyService.GetAll()
-                .FirstOrDefault(m => m.Id == id);
-            if (faculty == null)
-            {
-                return NotFound();
-            }
+            var faculty = Newtonsoft.Json.JsonConvert.DeserializeObject<Faculty>(content);
 
-            return await Task.Run(() => View(faculty));
+
+            return await Task.FromResult<IActionResult>(View(faculty));
         }
 
         // POST: Faculties/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var response = await client.GetAsync($"api/Faculties/Details/{id}");
+            var content = await response.Content.ReadAsStringAsync();
 
-            var faculty = facultyService.Get(p=>p.Id==id);
+            var faculty = Newtonsoft.Json.JsonConvert.DeserializeObject<Faculty>(content);
 
-            facultyService.Delete(faculty);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(faculty);
 
-            var key = "facultyList";
-            //memoryCache.Remove(key);
-            //redisManager.Remove(key);
-            distributedCache.Remove(key);
+            var content2 = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response2 = await client.PostAsync("api/Faculties/Delete", content2);
 
 
-            return await Task.FromResult<IActionResult>(RedirectToAction(nameof(Index)));
-        }
+            return RedirectToAction("Index", "Faculties");
 
-        private bool FacultyExists(int id)
-        {
-            return facultyService.Get(p=>p.Id==id) != null!;
         }
     }
 }
