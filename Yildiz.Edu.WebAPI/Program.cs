@@ -2,7 +2,6 @@ using Autofac.Extensions.DependencyInjection;
 using Autofac;
 using Yildiz.Edu.Business.DependencyResolvers;
 using Yildiz.Edu.Security.AuthHelpers;
-using Yildiz.Edu.WebUI.AuthHelpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +21,6 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).Conf
 
 builder.Services.AddScoped<AuthHelper>();
 
-var cookieAuthOptions = builder.Configuration.GetSection("CookieAuthOptions").Get<CookieAuthOptions>();
 
 
 builder.Services.AddControllers();

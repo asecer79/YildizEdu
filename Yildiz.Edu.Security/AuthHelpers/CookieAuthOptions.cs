@@ -1,4 +1,4 @@
-﻿namespace Yildiz.Edu.WebUI.AuthHelpers
+﻿namespace Yildiz.Edu.Security.AuthHelpers
 {
     public class CookieAuthOptions
     {

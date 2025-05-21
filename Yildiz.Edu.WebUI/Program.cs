@@ -3,7 +3,6 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Yildiz.Edu.Business.DependencyResolvers;
 using Yildiz.Edu.Security.AuthHelpers;
-using Yildiz.Edu.WebUI.AuthHelpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
