@@ -1,24 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using System.Text;
-using Yildiz.Edu.Business.Abstract;
-using Yildiz.Edu.Business.Concrete;
-using Yildiz.Edu.Entities.Concrete;
+using Microsoft.AspNetCore.Authorization;
+using Yildiz.Edu.WebUI.Models.Concrete;
 
 namespace Yildiz.Edu.WebUI.Controllers
 {
+    [Authorize]
     public class DepartmentsController : Controller
     {
         private HttpClient client;
 
-        public DepartmentsController()
+        public DepartmentsController(IHttpContextAccessor httpContextAccessor)
         {
+
             client = new HttpClient()
             {
-                BaseAddress = new Uri("https://localhost:7136")
+                BaseAddress = new Uri("https://localhost:7136"),
 
             };
+            var token =httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(claim => claim.Type=="access_token").Value;
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
         }
 
 
@@ -38,7 +41,7 @@ namespace Yildiz.Edu.WebUI.Controllers
             var response = await client.GetAsync($"api/Departments/Details/{id}");
             var data = await response.Content.ReadAsStringAsync();
 
-            var department =Newtonsoft.Json.JsonConvert.DeserializeObject<Department>(data);
+            var department = Newtonsoft.Json.JsonConvert.DeserializeObject<Department>(data);
 
             return View(department);
         }
@@ -53,10 +56,10 @@ namespace Yildiz.Edu.WebUI.Controllers
 
             ViewData["FacultyId"] = new SelectList(faculties, "Id", "FacultyName");
 
-            return View( new Department());
+            return View(new Department());
         }
 
-     
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,DepartmentName,FacultyId,HeadOfDepartment")] Department department)
@@ -103,7 +106,7 @@ namespace Yildiz.Edu.WebUI.Controllers
             return await Task.FromResult<IActionResult>(View(department));
         }
 
-     
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,DepartmentName,FacultyId,HeadOfDepartment")] Department department)

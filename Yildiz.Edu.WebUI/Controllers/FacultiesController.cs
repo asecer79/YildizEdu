@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
-using Yildiz.Edu.Entities.Concrete;
+using Yildiz.Edu.WebUI.Models.Concrete;
 
 namespace Yildiz.Edu.WebUI.Controllers
 {
@@ -11,12 +12,16 @@ namespace Yildiz.Edu.WebUI.Controllers
 
         private HttpClient client;
 
-        public FacultiesController()
+        public FacultiesController(IHttpContextAccessor httpContextAccessor)
         {
+
             client = new HttpClient()
             {
-                BaseAddress = new Uri("https://localhost:7136")
+                BaseAddress = new Uri("https://localhost:7136"),
+
             };
+            var token = httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == "access_token").Value;
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
 
 

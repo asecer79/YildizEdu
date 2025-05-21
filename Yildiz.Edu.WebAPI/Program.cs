@@ -1,5 +1,7 @@
+using System.Text;
 using Autofac.Extensions.DependencyInjection;
 using Autofac;
+using Microsoft.IdentityModel.Tokens;
 using Yildiz.Edu.Business.DependencyResolvers;
 using Yildiz.Edu.Security.AuthHelpers;
 
@@ -30,6 +32,24 @@ builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
 
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+            ValidAudience = builder.Configuration["JwtSettings:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
+        };
+    });
+
+
+builder.Services.AddAuthorization();
+
 
 var app = builder.Build();
 
@@ -47,6 +67,8 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

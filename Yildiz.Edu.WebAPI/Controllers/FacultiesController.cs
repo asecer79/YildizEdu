@@ -11,6 +11,7 @@ namespace Yildiz.Edu.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class FacultiesController : ControllerBase
     {
         //RedisManagerV1 redisManager = new RedisManagerV1();

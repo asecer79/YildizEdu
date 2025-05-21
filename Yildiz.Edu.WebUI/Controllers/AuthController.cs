@@ -1,15 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Yildiz.Edu.Security.AuthHelpers;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Yildiz.Edu.WebUI.Models.Dtos;
 
 namespace Yildiz.Edu.WebUI.Controllers
 {
     public class AuthController : Controller
     {
-        AuthHelper authHelper;
-        public AuthController(AuthHelper authHelper)
+        HttpClient client;
+
+        public AuthController()
         {
-            this.authHelper = authHelper;
+     
+            client = new HttpClient()
+            {
+                BaseAddress = new Uri("https://localhost:7136")
+
+            };
         }
+
         [HttpGet]
         public async Task<IActionResult>  Login()
         {
@@ -21,25 +33,50 @@ namespace Yildiz.Edu.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
-            var isAuthenticated = await authHelper.SignIn(email, password);
 
-            if (isAuthenticated)
+            //      var response = await client.GetAsync($"api/Departments/Details/{id}");
+
+            var response = await client.PostAsJsonAsync($"api/auth/login", new LoginRequestDto()
             {
-                return RedirectToAction("Index", "Home");
-            }
+                Email = email,
+                Password= password
 
-            ViewBag.message = "User cannot be found! Check username and password!";
-            ViewBag.email = email;
-            ViewBag.password = password;
+            } );
 
-            return View();
+            if (!response.IsSuccessStatusCode)
+                return Unauthorized();
+
+            var result = JsonConvert.DeserializeObject<LoginResponseDto>(await response.Content.ReadAsStringAsync());
+
+            //Response.Cookies.Append("access_token",result.Token, new CookieOptions
+            //{
+            //    HttpOnly = true,
+            //    Secure = true,
+            //});
+
+            var handler = new JwtSecurityTokenHandler();
+
+            var token = handler.ReadJwtToken(result.Token);
+
+            var claims = token.Claims.ToList();
+
+            claims.Add(new Claim("access_token",result.Token));
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            return RedirectToAction("Index", "Home");
+
         }
 
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
 
-            await authHelper.SignOut();
+             await HttpContext.SignOutAsync();
 
             return RedirectToAction("Login", "Auth");
         }

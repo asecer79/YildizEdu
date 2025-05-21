@@ -1,8 +1,11 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 using Yildiz.Edu.Business.Abstract;
 using Yildiz.Edu.Entities.Concrete.Security;
 
@@ -11,13 +14,11 @@ namespace Yildiz.Edu.Security.AuthHelpers
     public class AuthHelper
     {
         IConfiguration configuration;
-        IHttpContextAccessor httpContextAccessor;
         IUserService userService;
 
-        public AuthHelper(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IUserService userService)
+        public AuthHelper(IConfiguration configuration,  IUserService userService)
         {
             this.configuration = configuration;
-            this.httpContextAccessor = httpContextAccessor;
             this.userService = userService;
         }
 
@@ -47,32 +48,39 @@ namespace Yildiz.Edu.Security.AuthHelpers
             return claims;
         }
 
-        public async Task<bool> SignIn(string email, string password)
+        public string SignIn(string email, string password)
         {
             var userExists = userService.CheckUserToLogin(email, password);
 
             if (!userExists)
             {
-                return false;
+                return null;
             }
             var user = userService.GetUserByEmail(email, password);
 
             var claims = GetUserClaims(user);
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var jwtSettings = configuration.GetSection("JwtSettings");
 
-            var principal = new ClaimsPrincipal(identity);
+            //Convert.ToDouble(jwtSettings["ExpireTime"]
 
-            await httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
 
-            return true;
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: jwtSettings["Issuer"],
+                audience: jwtSettings["Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["ExpireTime"])),
+                signingCredentials: creds
+            );
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+         
+            return tokenHandler.WriteToken(token);
+
         }
 
-        public async Task<bool> SignOut()
-        {
-            await httpContextAccessor.HttpContext.SignOutAsync();
-
-            return true;
-        }
     }
 }
